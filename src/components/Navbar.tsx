@@ -23,7 +23,14 @@ export default function Navbar() {
         aria-label="Primary"
       >
         <Link href="/" aria-label="Nike Home" className="flex items-center">
-          <Image src="/logo.svg" alt="Nike" width={63} height={63} priority className="invert" />
+          <Image
+            src="/logo.svg"
+            alt="Nike"
+            width={63}
+            height={63}
+            priority
+            className="invert"
+          />
         </Link>
 
         <ul className="hidden items-center gap-8 md:flex">
@@ -43,9 +50,12 @@ export default function Navbar() {
           <button className="text-body text-dark-900 transition-colors hover:text-dark-700">
             Search
           </button>
-          <button className="text-body text-dark-900 transition-colors hover:text-dark-700">
+          <Link
+            href="/cart"
+            className="text-body text-dark-900 transition-colors hover:text-dark-700"
+          >
             My Cart (2)
-          </button>
+          </Link>
         </div>
 
         <button
@@ -62,7 +72,9 @@ export default function Navbar() {
 
       <div
         id="mobile-menu"
-        className={`border-t border-light-300 md:hidden ${open ? "block" : "hidden"}`}
+        className={`border-t border-light-300 md:hidden ${
+          open ? "block" : "hidden"
+        }`}
       >
         <ul className="space-y-2 px-4 py-3">
           {NAV_LINKS.map((l) => (
@@ -77,8 +89,10 @@ export default function Navbar() {
             </li>
           ))}
           <li className="flex items-center justify-between pt-2">
+            <Link href="/cart" className="text-body">
+              My Cart
+            </Link>
             <button className="text-body">Search</button>
-            <button className="text-body">My Cart (2)</button>
           </li>
         </ul>
       </div>

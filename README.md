@@ -1,9 +1,4 @@
-<div align="center">
-  <br />
-    <a href="https://youtu.be/fZdTYswuZjU" target="_blank">
-      <img src="public/readme/hero.webp" alt="Project Banner">
-    </a>
-  <br />
+
 
   <div>
     <img src="https://img.shields.io/badge/-TypeScript-black?style=for-the-badge&logoColor=white&logo=typescript&color=3178C6"/>

@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { CartIndicator } from "./CartIndicator";
 
 const NAV_LINKS = [
   { label: "Men", href: "/products?gender=men" },
@@ -47,14 +48,11 @@ export default function Navbar() {
         </ul>
 
         <div className="hidden items-center gap-6 md:flex">
-          <button className="text-body text-dark-900 transition-colors hover:text-dark-700">
-            Search
-          </button>
           <Link
             href="/cart"
-            className="text-body text-dark-900 transition-colors hover:text-dark-700"
+            className="text-body text-dark-900 transition-colors hover:text-dark-700 flex items-center gap-1"
           >
-            My Cart (2)
+            <span className="mr-2">My Cart</span> <CartIndicator />
           </Link>
         </div>
 

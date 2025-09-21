@@ -26,8 +26,8 @@ const Home = async () => {
 
   return (
     <div>
+      <Carousel />
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Carousel />
         <section aria-labelledby="latest" className="pb-12 pt-12">
           <h2 id="latest" className="mb-6 text-heading-3 text-dark-900">
             Latest shoes

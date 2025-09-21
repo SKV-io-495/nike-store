@@ -90,7 +90,7 @@ export default function Navbar() {
             <Link href="/cart" className="text-body">
               My Cart
             </Link>
-            <button className="text-body">Search</button>
+            {/* <button className="text-body">Search</button> */}
           </li>
         </ul>
       </div>

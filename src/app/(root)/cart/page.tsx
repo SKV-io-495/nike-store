@@ -81,10 +81,7 @@ export default function CartPage() {
               <span>${(total + 2).toFixed(2)}</span>
             </div>
             <button
-              onClick={() => {
-                setShowPopup(true);
-                clearCart();
-              }}
+              onClick={() => setShowPopup(true)}
               className="w-full mt-4 bg-black text-white py-2 rounded-lg"
             >
               Proceed to Checkout
@@ -98,7 +95,10 @@ export default function CartPage() {
             <CheckCircle className="mx-auto h-16 w-16 text-blue-500" />
             <h2 className="mt-4 text-2xl font-bold">Thank you for your purchase!</h2>
             <button
-              onClick={() => setShowPopup(false)}
+              onClick={() => {
+                setShowPopup(false);
+                clearCart();
+              }}
               className="mt-6 bg-blue-500 text-white px-4 py-2 rounded"
             >
               Close

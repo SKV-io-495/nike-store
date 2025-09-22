@@ -1,11 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { carts, cartItems } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     return new Response('Unauthorized', { status: 401 });

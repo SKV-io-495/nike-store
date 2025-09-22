@@ -12,24 +12,24 @@ const AthleticPursuit = () => {
             <Image
               src="/atheletic-pursuit/Gemini_Generated_Image_1.png"
               alt="Athlete 1"
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: 'cover' }}
             />
           </div>
           <div className="relative w-full aspect-[2/3]">
             <Image
               src="/atheletic-pursuit/Gemini_Generated_Image_2.png"
               alt="Athlete 2"
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: 'cover' }}
             />
           </div>
           <div className="relative w-full aspect-[2/3]">
             <Image
               src="/atheletic-pursuit/Gemini_Generated_Image_3.png"
               alt="Athlete 3"
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: 'cover' }}
             />
           </div>
         </div>

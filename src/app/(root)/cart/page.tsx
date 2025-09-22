@@ -34,7 +34,7 @@ export default function CartPage() {
                     />
                     <div>
                       <h2 className="text-lg font-semibold">{item.variant.product.name}</h2>
-                      <p className="text-sm text-gray-500">Men's Shoes</p>
+                      <p className="text-sm text-gray-500">Men&#39;s Shoes</p>
                       <p className="text-sm text-gray-500">Size: 10</p>
                       <div className="flex items-center gap-2 mt-2">
                         <button

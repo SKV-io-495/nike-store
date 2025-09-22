@@ -24,14 +24,15 @@ export default function Navbar() {
         aria-label="Primary"
       >
         <Link href="/" aria-label="Nike Home" className="flex items-center">
-          <Image
-            src="/logo.svg"
-            alt="Nike"
-            width={63}
-            height={63}
-            priority
-            className="invert"
-          />
+          <div className="relative h-16 w-16">
+            <Image
+              src="/logo.svg"
+              alt="Nike"
+              fill
+              priority={true}
+              className="invert w-auto h-auto" // Use Tailwind classes for sizing and styling
+            />
+          </div>
         </Link>
 
         <ul className="hidden items-center gap-8 md:flex">

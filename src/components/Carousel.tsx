@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 
 const images = [
-  '/carousel/198b0e171616083.64f99764d284a.jpg',
-  '/carousel/0493f3171616083.64f99764d50e0.jpg',
-  '/carousel/bc8b0c171616083.64f99764d0ce0.jpg',
-  '/carousel/eac999171616083.64f99764d4562.jpg',
-  '/carousel/f8699c171616083.64f99764d1bc0.jpg',
+  "/carousel/198b0e171616083.64f99764d284a.jpg",
+  "/carousel/0493f3171616083.64f99764d50e0.jpg",
+  "/carousel/bc8b0c171616083.64f99764d0ce0.jpg",
+  "/carousel/eac999171616083.64f99764d4562.jpg",
+  "/carousel/f8699c171616083.64f99764d1bc0.jpg",
 ];
 
 const Carousel = () => {
@@ -31,10 +31,16 @@ const Carousel = () => {
         <div
           key={src}
           className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${
-            index === currentIndex ? 'opacity-100' : 'opacity-0'
+            index === currentIndex ? "opacity-100" : "opacity-0"
           }`}
         >
-          <Image src={src} alt={`Slide ${index + 1}`} layout="fill" objectFit="fill" />
+          <Image
+            src={src}
+            alt={`Slide ${index + 1}`}
+            fill
+            style={{ objectFit: "cover" }}
+            priority={true}
+          />
         </div>
       ))}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
@@ -43,7 +49,7 @@ const Carousel = () => {
             key={index}
             onClick={() => goToSlide(index)}
             className={`w-3 h-3 rounded-full ${
-              index === currentIndex ? 'bg-white' : 'bg-gray-400'
+              index === currentIndex ? "bg-white" : "bg-gray-400"
             }`}
           />
         ))}

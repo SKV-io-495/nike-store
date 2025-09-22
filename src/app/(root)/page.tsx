@@ -2,16 +2,11 @@ import React from "react";
 import { Card } from "@/components";
 import Carousel from "@/components/Carousel";
 import AthleticPursuit from "@/components/AthleticPursuit";
-import { getCurrentUser } from "@/lib/auth/actions";
 import { getProductsByIds } from "@/lib/actions/product";
 import fs from "fs/promises";
 import path from "path";
 
 const Home = async () => {
-  const user = await getCurrentUser();
-
-  console.log('USER:', user);
-
   const filePath = path.join(process.cwd(), 'homepage-product-ids.txt');
   const fileContent = await fs.readFile(filePath, 'utf-8');
   const productIds = fileContent

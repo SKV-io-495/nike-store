@@ -37,7 +37,7 @@ async function getCartWithImages(cartId: string) {
                     orderBy: (images, { asc }) => [asc(images.sortOrder)],
                 });
             }
-            (item.variant as any).images = variantImages;
+            (item.variant as typeof item.variant & { images: typeof variantImages }).images = variantImages;
         }
     }
     return cart;

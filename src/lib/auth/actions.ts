@@ -1,12 +1,12 @@
 "use server";
 
-import {cookies, headers} from "next/headers";
+import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { guests } from "@/lib/db/schema/index";
 import { and, eq, lt } from "drizzle-orm";
-import { randomUUID } from "crypto";
 
 const COOKIE_OPTIONS = {
   httpOnly: true as const,
@@ -27,7 +27,7 @@ export async function createGuestSession() {
     return { ok: true, sessionToken: existing.value };
   }
 
-  const sessionToken = randomUUID();
+  const sessionToken = crypto.randomUUID();
   const now = new Date();
   const expiresAt = new Date(now.getTime() + COOKIE_OPTIONS.maxAge * 1000);
 
@@ -78,7 +78,7 @@ export async function signUp(formData: FormData) {
   });
 
   await migrateGuestToUser();
-  return { ok: true, userId: res.user?.id };
+  redirect("/sign-in");
 }
 
 const signInSchema = z.object({
@@ -102,7 +102,7 @@ export async function signIn(formData: FormData) {
   });
 
   await migrateGuestToUser();
-  return { ok: true, userId: res.user?.id };
+  redirect("/");
 }
 
 export async function getCurrentUser() {
@@ -119,8 +119,8 @@ export async function getCurrentUser() {
 }
 
 export async function signOut() {
-  await auth.api.signOut({ headers: {} });
-  return { ok: true };
+  await auth.api.signOut({ headers: await headers() });
+  redirect("/sign-in");
 }
 
 export async function mergeGuestCartWithUserCart() {

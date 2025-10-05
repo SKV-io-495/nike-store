@@ -66,27 +66,29 @@ export default function CartPage() {
           )}
         </div>
         <div className="lg:col-span-1">
-          <div className="p-4 border rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Summary</h2>
-            <div className="flex justify-between mb-2">
-              <span>Subtotal</span>
-              <span>${total.toFixed(2)}</span>
+          {items.length > 0 && (
+            <div className="p-4 border rounded-lg">
+              <h2 className="text-xl font-bold mb-4">Summary</h2>
+              <div className="flex justify-between mb-2">
+                <span>Subtotal</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span>Estimated Delivery & Handling</span>
+                <span>$2.00</span>
+              </div>
+              <div className="flex justify-between font-bold text-lg">
+                <span>Total</span>
+                <span>${(total + 2).toFixed(2)}</span>
+              </div>
+              <button
+                onClick={() => setShowPopup(true)}
+                className="w-full mt-4 bg-black text-white py-2 rounded-lg"
+              >
+                Proceed to Checkout
+              </button>
             </div>
-            <div className="flex justify-between mb-2">
-              <span>Estimated Delivery & Handling</span>
-              <span>$2.00</span>
-            </div>
-            <div className="flex justify-between font-bold text-lg">
-              <span>Total</span>
-              <span>${(total + 2).toFixed(2)}</span>
-            </div>
-            <button
-              onClick={() => setShowPopup(true)}
-              className="w-full mt-4 bg-black text-white py-2 rounded-lg"
-            >
-              Proceed to Checkout
-            </button>
-          </div>
+          )}
         </div>
       </div>
       {showPopup && (

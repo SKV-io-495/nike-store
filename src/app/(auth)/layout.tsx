@@ -1,8 +1,18 @@
 import Image from "next/image";
+import { Toaster } from "react-hot-toast";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+      <Toaster
+        toastOptions={{
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
       <section className="hidden lg:flex flex-col justify-between bg-dark-900 text-light-100 p-10">
         <div className="flex items-center">
           <div className="h-8 w-8 rounded-md bg-orange inline-flex items-center justify-center">

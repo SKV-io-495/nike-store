@@ -31,9 +31,12 @@ export default function AuthForm({ mode, onSubmit }: Props) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <p className="text-caption text-dark-700">
+        <p className="text-body text-dark-700">
           {mode === "sign-in" ? "Don’t have an account? " : "Already have an account? "}
-          <Link href={mode === "sign-in" ? "/sign-up" : "/sign-in"} className="underline">
+          <Link
+            href={mode === "sign-in" ? "/sign-up" : "/sign-in"}
+            className="underline hover:text-blue-500"
+          >
             {mode === "sign-in" ? "Sign Up" : "Sign In"}
           </Link>
         </p>

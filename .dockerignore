@@ -1,0 +1,8 @@
+.env
+.git
+.github
+node_modules
+npm-debug.log
+README.md
+.next
+drizzle/

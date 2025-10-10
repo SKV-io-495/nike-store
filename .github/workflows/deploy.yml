@@ -44,7 +44,7 @@ jobs:
           # This is the same build command we figured out, but now it's automated!
           # We use a placeholder for the DATABASE_URL because the build needs it,
           # but we don't need a real one for the CI test.
-          docker build --build-arg DATABASE_URL="placeholder" -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       # FINAL STEP (DISABLED FOR NOW)

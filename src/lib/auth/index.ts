@@ -6,6 +6,9 @@ import { v4 as uuidv4 } from "uuid";
 import {nextCookies} from "better-auth/next-js";
 
 export const auth = betterAuth({
+  // Add this line to explicitly set the secret
+  secret: process.env.BETTER_AUTH_SECRET,
+  
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {

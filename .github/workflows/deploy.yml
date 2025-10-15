@@ -44,4 +44,5 @@ jobs:
 
       # Step 5: Trigger deployment on Render
       - name: Deploy to Render
-        run: curl "${{ secrets.RENDER_DEPLOY_HOOK }}"
+        run: |
+          curl "${{ secrets.RENDER_DEPLOY_HOOK }}&imageUrl=${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_ECR_REPOSITORY_NAME }}:${{ github.sha }}"

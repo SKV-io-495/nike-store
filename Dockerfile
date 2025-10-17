@@ -47,5 +47,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Set the user to the non-root user
 USER nextjs
 
+# Tell the Next.js server to listen on port 80
+ENV PORT=80
+
 # Start the Next.js server
 CMD ["node", "server.js"]

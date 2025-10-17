@@ -1,0 +1,30 @@
+{
+  "family": "skv-nike",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "3072",
+  "executionRoleArn": "arn:aws:iam::059951454851:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "nike-container",
+      "image": "059951454851.dkr.ecr.us-west-2.amazonaws.com/nike-store:0844ae217982e65c6ca2ee0d67c802e00236895e",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/skv-nike",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

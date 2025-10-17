@@ -1,8 +1,5 @@
-# A descriptive name for your workflow
-name: Build, Push to ECR, and Deploy to Render
+name: Build, Push to ECR, and Deploy to ECS
 
-# This tells GitHub to run the workflow automatically
-# whenever you push code to the "main" branch.
 on:
   push:
     branches:
@@ -11,7 +8,6 @@ on:
 jobs:
   build-push-deploy:
     name: Build, Push, and Deploy
-    # Use a clean virtual computer provided by GitHub to run the job
     runs-on: ubuntu-latest
 
     steps:
@@ -19,30 +15,45 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Configure the AWS credentials using the secrets you created
+      # Step 2: Configure your AWS credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }} # e.g., us-west-2
 
-      # Step 3: Log in to your Amazon ECR "warehouse"
+      # Step 3: Log in to Amazon ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # Step 4: Build the Docker image and push it to ECR
+      # Step 4: Build and push your Docker image to ECR
       - name: Build, tag, and push image to Amazon ECR
+        id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPOSITORY_NAME }}
+          ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPOSITORY_NAME }} # e.g., nike-store
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      # Step 5: Trigger deployment on Render
-      - name: Deploy to Render
-        run: |
-          curl "${{ secrets.RENDER_DEPLOY_HOOK }}&imageUrl=${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_ECR_REPOSITORY_NAME }}:${{ github.sha }}"
+      # Step 5: Create a new ECS task definition revision with the new image
+      - name: Render Amazon ECS task definition
+        id: render-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: nike-container # This name comes from your task-definition.json
+          image: ${{ steps.build-image.outputs.image }}
+
+      # Step 6: Deploy the new task definition to your ECS service
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-task-def.outputs.task-definition }}
+          service: ${{ secrets.ECS_SERVICE_NAME }}
+          cluster: ${{ secrets.ECS_CLUSTER_NAME }}
+          wait-for-service-stability: true

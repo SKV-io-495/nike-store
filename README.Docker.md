@@ -43,3 +43,5 @@ You can also build and run the application using manual Docker commands.
     Make sure you have your `DATABASE_URL` ready.
     ```sh
     docker run -p 3000:3000 -e DATABASE_URL="your_postgresql_connection_string" nike-store
+
+3.

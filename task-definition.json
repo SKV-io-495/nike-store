@@ -28,8 +28,12 @@
       },
       "environment": [
         {
+          "name": "NODE_ENV",
+          "value": "production"
+        },
+        {
           "name": "BETTER_AUTH_URL",
-          "value": "http://nike-app-alb-2-1741456211.us-west-2.elb.amazonaws.com:3000"
+          "value": "http://localhost:3000"
         },
         {
           "name": "NEXT_PUBLIC_BASE_URL",

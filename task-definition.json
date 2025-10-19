@@ -1,30 +1,51 @@
 {
-  "family": "skv-nike",
+  "family": "nike-app-task-def",
+  "taskRoleArn": null,
+  "executionRoleArn": "arn:aws:iam::059951454851:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
   "memory": "3072",
-  "executionRoleArn": "arn:aws:iam::059951454851:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
-      "name": "nike-container",
-      "image": "059951454851.dkr.ecr.us-west-2.amazonaws.com/nike-store:0844ae217982e65c6ca2ee0d67c802e00236895e",
+      "name": "nike-container-new",
+      "image": "PLACEHOLDER_IMAGE_URL",
       "essential": true,
       "portMappings": [
         {
           "containerPort": 3000,
-          "hostPort": 3000,
-          "protocol": "tcp"
+          "protocol": "tcp",
+          "hostPort": 3000
         }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/skv-nike",
+          "awslogs-group": "/ecs/nike-app-task-def",
           "awslogs-region": "us-west-2",
           "awslogs-stream-prefix": "ecs"
         }
-      }
+      },
+      "environment": [
+        {
+          "name": "BETTER_AUTH_URL",
+          "value": "http://nike-app-alb-2-1741456211.us-west-2.elb.amazonaws.com:3000"
+        },
+        {
+          "name": "NEXT_PUBLIC_BASE_URL",
+          "value": "http://nike-app-alb-2-1741456211.us-west-2.elb.amazonaws.com:3000"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "DATABASE_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-west-2:059951454851:secret:nike-store/secrets-77ZN9A:DATABASE_URL::"
+        },
+        {
+          "name": "BETTER_AUTH_SECRET",
+          "valueFrom": "arn:aws:secretsmanager:us-west-2:059951454851:secret:nike-store/secrets-77ZN9A:BETTER_AUTH_SECRET::"
+        }
+      ]
     }
   ]
 }

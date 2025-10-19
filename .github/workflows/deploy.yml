@@ -46,7 +46,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name: nike-container # This name comes from your task-definition.json
+          container-name: nike-container-new # This name comes from your task-definition.json
           image: ${{ steps.build-image.outputs.image }}
 
       # Step 6: Deploy the new task definition to your ECS service

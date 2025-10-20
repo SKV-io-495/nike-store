@@ -44,6 +44,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# --- ADD THIS LINE ---
+COPY --from=builder --chown=nextjs:nodejs /app/homepage-product-ids.txt ./
+# --- END ADDITION ---
+
 # Set the user to the non-root user
 USER nextjs
 

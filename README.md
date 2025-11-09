@@ -148,6 +148,5 @@ Distributed under the MIT License.
 
 ## Contact
 
-Your Name - [your-portfolio-link.com](https://your-portfolio-link.com)
+LinkedIn: [https://www.linkedin.com/in/sumitverma-495t0f](https://www.linkedin.com/in/sumitverma-495t0f)
 
-Project Link: [https://github.com/SKV-io-495/nike-store](https://github.com/SKV-io-495/nike-store)

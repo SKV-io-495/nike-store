@@ -36,6 +36,8 @@ steps:
       - '--region'
       - '${_LOCATION}'
       - '--allow-unauthenticated'
+
+      - '--service-account=nike-store-runtime@gen-lang-client-0866064925.iam.gserviceaccount.com'
       # Set runtime environment variables
       - '--update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production,PORT=3000'
       # Set runtime secrets

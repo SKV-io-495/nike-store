@@ -3,19 +3,19 @@
 
 steps:
   # 1. Get ALL build-time secrets from Secret Manager
-  - name: 'google/cloud-sdk:latest'
-    entrypoint: 'bash'
+  - name: "google/cloud-sdk:latest"
+    entrypoint: "bash"
     args:
-      - '-c'
+      - "-c"
       - |
         gcloud secrets versions access latest --secret=NIKE_STORE_DATABASE_URL > db_url.txt
         gcloud secrets versions access latest --secret=NIKE_STORE_BETTER_AUTH_SECRET > auth_secret.txt
-    
+
   # 2. Build the Docker image
-  - name: 'docker:20.10'
-    entrypoint: 'sh'
+  - name: "docker:20.10"
+    entrypoint: "sh"
     args:
-      - '-c'
+      - "-c"
       - |
         docker build \
           --build-arg "DATABASE_URL=$(cat db_url.txt)" \
@@ -24,25 +24,26 @@ steps:
           .
 
   # 3. Push the image to Artifact Registry
-  - name: 'docker:20.10'
+  - name: "docker:20.10"
     args:
-      - 'push'
-      - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
+      - "push"
+      - "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA"
 
   # 4. Deploy the new image to Cloud Run
   # THIS IS THE FIXED STEP:
-  - name: 'google/cloud-sdk:latest'
-    entrypoint: 'bash'
+  - name: "google/cloud-sdk:latest"
+    entrypoint: "bash"
     args:
-      - '-c'
-      - 'gcloud run deploy nike-store ... --update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production,NEXT_PUBLIC_BASE_URL=https://nike-store-86104594720.us-central1.run.app --update-secrets=...'
+      - "-c"
+      - 'gcloud run deploy nike-store --image "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA" --region "${_LOCATION}" --allow-unauthenticated --port=3000 --service-account=nike-store-runtime@gen-lang-client-0866064925.iam.gserviceaccount.com --update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production,NEXT_PUBLIC_BASE_URL=https://nike-store-86104594720.us-central1.run.app --update-secrets=DATABASE_URL=NIKE_STORE_DATABASE_URL:latest,BETTER_AUTH_SECRET=NIKE_STORE_BETTER_AUTH_SECRET:latest'
+
 # This stores the built image in Artifact Registry
 images:
-  - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
+  - "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA"
 
 # Set up some substitutions (we'll define these in the trigger)
 substitutions:
-  _LOCATION: 'us-central1' # Use the same location as your Artifact Registry
+  _LOCATION: "us-central1" # Use the same location as your Artifact Registry
 
 # This section is required by your org policy
 options:

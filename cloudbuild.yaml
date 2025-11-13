@@ -11,16 +11,17 @@ steps:
       - |
         gcloud secrets versions access latest --secret=NIKE_STORE_DATABASE_URL > db_url.txt
     
-  # 2. Build the Docker image
+ # 2. Build the Docker image
   # We use the official 'docker' image from Docker Hub
   - name: 'docker:latest'
+    entrypoint: 'bash'  # <-- We are adding this
     args:
-      - 'build'
-      - '--build-arg'
-      - 'DATABASE_URL=$(cat db_url.txt)'
-      - '-t'
-      - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
-      - '.'
+      - '-c'            # <-- And this
+      - |               # <-- And this, to use a multi-line command
+        docker build \
+          --build-arg "DATABASE_URL=$(cat db_url.txt)" \
+          -t "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA" \
+          .
 
   # 3. Push the image to Artifact Registry
   # We use the official 'docker' image from Docker Hub

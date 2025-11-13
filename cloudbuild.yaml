@@ -2,7 +2,7 @@
 
 steps:
   # 1. Get the DATABASE_URL from Secret Manager to use as a build-arg
-  - name: 'gcr.io/google-cloud-builders/gcloud'
+  - name: 'us-docker.pkg.dev/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -10,33 +10,32 @@ steps:
         gcloud secrets versions access latest --secret=NIKE_STORE_DATABASE_URL > db_url.txt
     
   # 2. Build the Docker image
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'us-docker.pkg.dev/cloud-builders/docker'
     args:
       - 'build'
       - '--build-arg'
-      - 'DATABASE_URL=$(cat db_url.txt)' # <-- This is the critical step
+      - 'DATABASE_URL=$(cat db_url.txt)'
       - '-t'
-      - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA' # <-- Tags the image
+      - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
       - '.'
 
   # 3. Push the image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'us-docker.pkg.dev/cloud-builders/docker'
     args:
       - 'push'
       - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
 
   # 4. Deploy the new image to Cloud Run
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'us-docker.pkg.dev/cloud-builders/gcloud'
     args:
       - 'run'
       - 'deploy'
-      - 'nike-store' # <-- The name of our Cloud Run service
+      - 'nike-store'
       - '--image'
       - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
       - '--region'
       - '${_LOCATION}'
       - '--allow-unauthenticated'
-
       - '--service-account=nike-store-runtime@gen-lang-client-0866064925.iam.gserviceaccount.com'
       # Set runtime environment variables
       - '--update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production,PORT=3000'
@@ -51,5 +50,7 @@ images:
 substitutions:
   _LOCATION: 'us-central1' # Use the same location as your Artifact Registry
 
+# --- THIS SECTION IS REQUIRED ---
+# We must add this back, as you correctly pointed out.
 options:
   logging: CLOUD_LOGGING_ONLY

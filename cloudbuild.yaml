@@ -35,8 +35,7 @@ steps:
     entrypoint: 'bash'
     args:
       - '-c'
-      - 'gcloud run deploy nike-store --image "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA" --region "${_LOCATION}" --allow-unauthenticated --port=3000 --service-account=nike-store-runtime@gen-lang-client-0866064925.iam.gserviceaccount.com --update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production --update-secrets=DATABASE_URL=NIKE_STORE_DATABASE_URL:latest,BETTER_AUTH_SECRET=NIKE_STORE_BETTER_AUTH_SECRET:latest'
-
+      - 'gcloud run deploy nike-store ... --update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production,NEXT_PUBLIC_BASE_URL=https://nike-store-86104594720.us-central1.run.app --update-secrets=...'
 # This stores the built image in Artifact Registry
 images:
   - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'

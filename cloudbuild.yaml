@@ -2,54 +2,52 @@
 
 steps:
   # 1. Get the DATABASE_URL from Secret Manager to use as a build-arg
-  - name: 'gcr.io/cloud-run/builder:latest'
-    entrypoint: 'bash'
+  - name: "gcr.io/google-cloud-builders/gcloud"
+    entrypoint: "bash"
     args:
-      - '-c'
+      - "-c"
       - |
         gcloud secrets versions access latest --secret=NIKE_STORE_DATABASE_URL > db_url.txt
-    
+
   # 2. Build the Docker image
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: "gcr.io/cloud-builders/docker"
     args:
-      - 'build'
-      - '--build-arg'
-      - 'DATABASE_URL=$(cat db_url.txt)' # <-- This is the critical step
-      - '-t'
-      - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA' # <-- Tags the image
-      - '.'
+      - "build"
+      - "--build-arg"
+      - "DATABASE_URL=$(cat db_url.txt)" # <-- This is the critical step
+      - "-t"
+      - "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA" # <-- Tags the image
+      - "."
 
   # 3. Push the image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: "gcr.io/cloud-builders/docker"
     args:
-      - 'push'
-      - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
+      - "push"
+      - "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA"
 
   # 4. Deploy the new image to Cloud Run
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: "gcr.io/cloud-builders/gcloud"
     args:
-      - 'run'
-      - 'deploy'
-      - 'nike-store' # <-- The name of our Cloud Run service
-      - '--image'
-      - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
-      - '--region'
-      - '${_LOCATION}'
-      - '--allow-unauthenticated'
+      - "run"
+      - "deploy"
+      - "nike-store" # <-- The name of our Cloud Run service
+      - "--image"
+      - "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA"
+      - "--region"
+      - "${_LOCATION}"
+      - "--allow-unauthenticated"
 
-      - '--service-account=nike-store-runtime@gen-lang-client-0866064925.iam.gserviceaccount.com'
+      - "--service-account=nike-store-runtime@gen-lang-client-0866064925.iam.gserviceaccount.com"
       # Set runtime environment variables
-      - '--update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production,PORT=3000'
+      - "--update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production,PORT=3000"
       # Set runtime secrets
-      - '--update-secrets=DATABASE_URL=NIKE_STORE_DATABASE_URL:latest,BETTER_AUTH_SECRET=NIKE_STORE_BETTER_AUTH_SECRET:latest'
+      - "--update-secrets=DATABASE_URL=NIKE_STORE_DATABASE_URL:latest,BETTER_AUTH_SECRET=NIKE_STORE_BETTER_AUTH_SECRET:latest"
 
 # This stores the built image in Artifact Registry
 images:
-  - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
+  - "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA"
 
 # Set up some substitutions (we'll define these in the trigger)
 substitutions:
-  _LOCATION: 'us-central1' # Use the same location as your Artifact Registry
+  _LOCATION: "us-central1" # Use the same location as your Artifact Registry
 
-options:
-  logging: CLOUD_LOGGING_ONLY

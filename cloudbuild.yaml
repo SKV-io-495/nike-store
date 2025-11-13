@@ -1,37 +1,37 @@
 # This file tells Google Cloud Build how to build and deploy app.
-# This version uses public Docker Hub images to bypass org policies.
+# Final version: Uses 'docker:20.10' for compatibility and passes all build-time secrets.
 
 steps:
-  # 1. Get the DATABASE_URL from Secret Manager to use as a build-arg
-  # We use the official 'google/cloud-sdk' image from Docker Hub
+  # 1. Get ALL build-time secrets from Secret Manager
   - name: 'google/cloud-sdk:latest'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         gcloud secrets versions access latest --secret=NIKE_STORE_DATABASE_URL > db_url.txt
+        gcloud secrets versions access latest --secret=NIKE_STORE_BETTER_AUTH_SECRET > auth_secret.txt
     
- # 2. Build the Docker image
-  # We use the official 'docker' image from Docker Hub
-  - name: 'docker:latest'
-    entrypoint: 'sh'  # <-- We are adding this
+  # 2. Build the Docker image
+  # We use 'docker:20.10' to match the Cloud Build daemon API version
+  - name: 'docker:20.10'
+    entrypoint: 'sh'
     args:
-      - '-c'            # <-- And this
-      - |               # <-- And this, to use a multi-line command
+      - '-c'
+      - |
         docker build \
           --build-arg "DATABASE_URL=$(cat db_url.txt)" \
+          --build-arg "BETTER_AUTH_SECRET=$(cat auth_secret.txt)" \
           -t "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA" \
           .
 
   # 3. Push the image to Artifact Registry
-  # We use the official 'docker' image from Docker Hub
-  - name: 'docker:latest'
+  # We use 'docker:20.10' here as well for consistency
+  - name: 'docker:20.10'
     args:
       - 'push'
       - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
 
   # 4. Deploy the new image to Cloud Run
-  # We use the official 'google/cloud-sdk' image from Docker Hub
   - name: 'google/cloud-sdk:latest'
     args:
       - 'run'

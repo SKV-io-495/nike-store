@@ -14,7 +14,7 @@ steps:
  # 2. Build the Docker image
   # We use the official 'docker' image from Docker Hub
   - name: 'docker:latest'
-    entrypoint: 'bash'  # <-- We are adding this
+    entrypoint: 'sh'  # <-- We are adding this
     args:
       - '-c'            # <-- And this
       - |               # <-- And this, to use a multi-line command

@@ -31,23 +31,19 @@ steps:
       - 'push'
       - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
 
-  # 4. Deploy the new image to Cloud Run
+ # 4. Deploy the new image to Cloud Run
   - name: 'google/cloud-sdk:latest'
+    entrypoint: 'bash' # <--- ADD THIS
     args:
-      - 'run'
-      - 'deploy'
-      - 'nike-store'
-      - '--image'
-      - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
-      - '--region'
-      - '${_LOCATION}'
-      - '--allow-unauthenticated'
-      - '--service-account=nike-store-runtime@gen-lang-client-0866064925.iam.gserviceaccount.com'
-      # Set runtime environment variables
-      - '--update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production,PORT=3000'
-      # Set runtime secrets
-      - '--update-secrets=DATABASE_URL=NIKE_STORE_DATABASE_URL:latest,BETTER_AUTH_SECRET=NIKE_STORE_BETTER_AUTH_SECRET:latest'
-
+      - '-c'           # <--- ADD THIS
+      - |              # <--- ADD THIS, and indent the rest
+        gcloud run deploy nike-store \
+          --image "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA" \
+          --region "${_LOCATION}" \
+          --allow-unauthenticated \
+          --service-account=nike-store-runtime@gen-lang-client-0866064925.iam.gserviceaccount.com \
+          --update-env-vars=BETTER_AUTH_URL=http://localhost:3000,NODE_ENV=production,PORT=3000 \
+          --update-secrets=DATABASE_URL=NIKE_STORE_DATABASE_URL:latest,BETTER_AUTH_SECRET=NIKE_STORE_BETTER_AUTH_SECRET:latest
 # This stores the built image in Artifact Registry
 images:
   - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'

@@ -49,7 +49,7 @@ steps:
 
 # This stores the built image in Artifact Registry
 images:
-  - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_HA'
+  - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
 
 # Set up some substitutions (we'll define these in the trigger)
 substitutions:

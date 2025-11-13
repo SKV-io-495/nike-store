@@ -1,33 +1,22 @@
 # Stage 1: Dependency Installation
-# This stage installs all the necessary npm packages.
+# (This stage is correct)
 FROM node:20-alpine AS deps
 WORKDIR /app
-
-# Copy package.json and lock files
 COPY package.json package-lock.json* ./
-# Install dependencies
 RUN npm install
 
 # Stage 2: Builder
-# This stage builds the Next.js application.
+# (This stage is correct)
 FROM node:20-alpine AS builder
 WORKDIR /app
-
-# Copy dependencies from the 'deps' stage
 COPY --from=deps /app/node_modules ./node_modules
-# Copy the rest of the application code
 COPY . .
-
-# Set the DATABASE_URL build argument (we'll handle the real one at runtime)
-# This is needed for Drizzle to generate the schema during the build.
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
-
-# Generate the Drizzle schema and build the app
 RUN npm run db:generate
 RUN npm run build
 
-# Stage 3: Runner
+# Stage 3: Runner (FIXED)
 # This is the final, lightweight image that will run in production.
 FROM node:20-alpine AS runner
 WORKDIR /app
@@ -39,17 +28,25 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy the standalone Next.js server output from the builder stage
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# --- FIXES START HERE ---
 
-# --- ADD THIS LINE ---
+# Copy package.json to install only production dependencies
+COPY --from=builder /app/package.json ./package.json
+
+# Install *only* production dependencies
+RUN npm install --production
+
+# Copy the built app from the 'builder' stage
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+
+# Copy your custom file
 COPY --from=builder --chown=nextjs:nodejs /app/homepage-product-ids.txt ./
-# --- END ADDITION ---
 
 # Set the user to the non-root user
 USER nextjs
 
-# Start the Next.js server
-CMD ["node", "server.js"]
+# Start the Next.js server using the script from package.json
+CMD ["npm", "start"]
+
+# --- FIXES END HERE ---

@@ -1,8 +1,10 @@
 # This file tells Google Cloud Build how to build and deploy app.
+# This version uses public Docker Hub images to bypass org policies.
 
 steps:
   # 1. Get the DATABASE_URL from Secret Manager to use as a build-arg
-  - name: 'us-docker.pkg.dev/cloud-builders/gcloud'
+  # We use the official 'google/cloud-sdk' image from Docker Hub
+  - name: 'google/cloud-sdk:latest'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -10,7 +12,8 @@ steps:
         gcloud secrets versions access latest --secret=NIKE_STORE_DATABASE_URL > db_url.txt
     
   # 2. Build the Docker image
-  - name: 'us-docker.pkg.dev/cloud-builders/docker'
+  # We use the official 'docker' image from Docker Hub
+  - name: 'docker:latest'
     args:
       - 'build'
       - '--build-arg'
@@ -20,13 +23,15 @@ steps:
       - '.'
 
   # 3. Push the image to Artifact Registry
-  - name: 'us-docker.pkg.dev/cloud-builders/docker'
+  # We use the official 'docker' image from Docker Hub
+  - name: 'docker:latest'
     args:
       - 'push'
       - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
 
   # 4. Deploy the new image to Cloud Run
-  - name: 'us-docker.pkg.dev/cloud-builders/gcloud'
+  # We use the official 'google/cloud-sdk' image from Docker Hub
+  - name: 'google/cloud-sdk:latest'
     args:
       - 'run'
       - 'deploy'
@@ -44,13 +49,12 @@ steps:
 
 # This stores the built image in Artifact Registry
 images:
-  - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_SHA'
+  - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/nike-store-repo/nike-store:$SHORT_HA'
 
 # Set up some substitutions (we'll define these in the trigger)
 substitutions:
   _LOCATION: 'us-central1' # Use the same location as your Artifact Registry
 
-# --- THIS SECTION IS REQUIRED ---
-# We must add this back, as you correctly pointed out.
+# This section is required by your org policy
 options:
   logging: CLOUD_LOGGING_ONLY

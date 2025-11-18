@@ -8,7 +8,7 @@ A full-featured, responsive e-commerce application built with Next.js, TypeScrip
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)](https://orm.drizzle.team/)
 
-### **[Live Demo](https://your-live-demo-link.com)**
+### **[Live Demo](https://nike-store-smoky.vercel.app/)**
 
 ---
 
